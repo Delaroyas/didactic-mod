@@ -12,13 +12,19 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
 	--local draw=minetest.registered_nodes[node.name].drawtype
 	--minetest.chat_send_player(puncher_name, "drawtype: " .. draw)
 	--local draw = minetest.registered_nodes["simplyslopes:slope_cobble"].drawtype
+	--local thisnode=minetest.registered_nodes["default:wood"]
 	local thisnode=minetest.registered_nodes[node.name]
-	for key,value in pairs(thisnode) 
-		do		
-		if (type(value) == "string") 
-		then minetest.chat_send_player(puncher_name, key .. " = " .. value)
-		else minetest.chat_send_player(puncher_name, key .. " not string")
-		end
+	
+	if thisnode==nil	
+	then minetest.chat_send_player(puncher_name, "Empty node")
+	else	
+		for key,value in pairs(thisnode) 
+			do		
+			if (type(value) == "string") 
+			then minetest.chat_send_player(puncher_name, key .. " = " .. value)
+			else minetest.chat_send_player(puncher_name, key .. " not string")
+			end
 	 	
+		end
 	end
 end)
