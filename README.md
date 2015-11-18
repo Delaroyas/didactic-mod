@@ -1,4 +1,4 @@
 # didactic-mod
 
 
-Just random code I write to leanr minetest lua programming
+Just random code I write to learn minetest lua programming
