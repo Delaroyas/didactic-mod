@@ -16,7 +16,8 @@
 --to swap two values, as in
   x, y = y, x                -- swap `x' for `y'
   a[i], a[j] = a[j], a[i]    -- swap `a[i]' for `a[j]'
-  
+
+--3  
   -- Repeat statememt. 
   -- Like a while, 
   --   but condition is checked at the end
@@ -26,6 +27,8 @@
     stuff
   until test == true'
 
+
+--4
 -- unpack
 -- A special function with multiple returns is unpack. 
 --It receives an array and returns as results all elements from the array, starting from index 1:
@@ -33,3 +36,20 @@
     a,b = unpack{10,20,30}     -- a=10, b=20, 30 is discarded
 --An important use for unpack is in a generic call mechanism. 
 --A generic call mechanism allows you to call any function, with any arguments, dynamically.
+
+--5
+-- Variable number of inputs
+--We can write this new function in Lua as follows:
+    function myfun (...)
+      -- All inputs are stored in a hidden variable named "arg"
+      for i,v in ipairs(arg) do 
+        wathever
+      end
+  end
+  -- A function may have regular parameters before the dots.
+   function g (a, b, ...) 
+      -- a = a
+      -- b = b 
+      -- additionnal input variables are 
+      -- stored in a hidden variable named "arg"
+  end
