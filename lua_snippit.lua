@@ -25,3 +25,11 @@
   repeat
     stuff
   until test == true'
+
+-- unpack
+-- A special function with multiple returns is unpack. 
+--It receives an array and returns as results all elements from the array, starting from index 1:
+    print(unpack{10,20,30})    --> 10   20   30
+    a,b = unpack{10,20,30}     -- a=10, b=20, 30 is discarded
+--An important use for unpack is in a generic call mechanism. 
+--A generic call mechanism allows you to call any function, with any arguments, dynamically.
