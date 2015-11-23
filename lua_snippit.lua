@@ -17,4 +17,11 @@
   x, y = y, x                -- swap `x' for `y'
   a[i], a[j] = a[j], a[i]    -- swap `a[i]' for `a[j]'
   
-  
+  -- Repeat statememt. 
+  -- Like a while, 
+  --   but condition is checked at the end
+  --   stops when condition is TRUE (not false)
+  --   Always executed at least once.
+  repeat
+    stuff
+  until test == true'
