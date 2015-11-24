@@ -2,8 +2,10 @@
 -- This file is not called it it just here as a learning/reminder tool
 
 --1
--- A useful Lua idiom is x = x or v, which is equivalent to
-  if not x then x = v end
+-- A useful Lua idiom is 
+x = x or v  
+--which is equivalent to
+if not x then x = v end
   
 --2 
 --Lua allows multiple assignment, where a list of values is assigned to
