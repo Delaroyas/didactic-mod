@@ -55,3 +55,8 @@ if not x then x = v end
       -- additionnal input variables are 
       -- stored in a hidden variable named "arg"
   end
+  
+  
+--6 Max
+  table.maxn ({1, 3, 2}) --> 3
+Returns the largest positive numerical index of the given table,
