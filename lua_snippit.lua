@@ -59,4 +59,4 @@ if not x then x = v end
   
 --6 Max
   table.maxn ({1, 3, 2}) --> 3
-Returns the largest positive numerical index of the given table,
+--Returns the largest positive numerical index of the given table,

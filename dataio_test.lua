@@ -47,6 +47,12 @@ local function save_mydata(player)
 	mydata[playername].lastsave=os.date("%Y-%m-%d %H:%M:%S");
 	save_player_moddata(playername,'mydata',mydata[playername])
 	mydata[playername]=nil
+
+	--local playername= player:get_player_name()
+	cloop[playername].lastsave=os.date("%Y-%m-%d %H:%M:%S");
+	save_player_moddata(playername,'cloop',cloop[playername])
+	cloop[playername]=nil
+
 end
 
 
