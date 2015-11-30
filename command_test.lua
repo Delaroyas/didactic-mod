@@ -33,6 +33,65 @@ minetest.register_chatcommand("giveitems", {
 	end
 })
 
+
+minetest.register_chatcommand("dumpdesc", {
+	privs = {
+		interact = true
+	},
+	func = function(playername, modname)
+		local descriptions = {}
+	
+		ind=0
+		for key,item in pairs(minetest.registered_items) do
+			if item.name:find(modname)==1 then
+				ind=ind+1
+				--minetest.chat_send_player(playername, item.name .. " = " .. item.description)
+				descriptions[ind] =  item.description 
+			end		
+		end
+
+	local dump=''
+	local previous=''
+	for k,thisDesc in spairs(descriptions, function(t,a,b) return t[b] > t[a] end) do
+		if not (thisDesc == previous) then
+			dump = dump .. thisDesc .. " = \n"
+			previous = thisDesc
+		end
+	    
+	end
+	filename=minetest.get_modpath(modname).."/locale/description_dump.txt"
+       	file = io.open(filename, "w")
+	file:write(dump)
+
+		
+	end
+})
+
+
+
+function spairs(t, order)
+    -- collect the keys
+    local keys = {}
+    for k in pairs(t) do keys[#keys+1] = k end
+
+    -- if order function given, sort by it by passing the table and keys a, b,
+    -- otherwise just sort the keys 
+    if order then
+        table.sort(keys, function(a,b) return order(t, a, b) end)
+    else
+        table.sort(keys)
+    end
+
+    -- return the iterator function
+    local i = 0
+    return function()
+        i = i + 1
+        if keys[i] then
+            return keys[i], t[keys[i]]
+        end
+    end
+end
+
 --[[ May be obsolete, giveitems gives blocs and items...
 
 minetest.register_chatcommand("givenodes", {
