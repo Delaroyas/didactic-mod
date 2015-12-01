@@ -21,8 +21,6 @@ minetest.register_node("didactic_mod:rubik", {
   groups = {cracky = 1},
   on_place = minetest.rotate_node,
 })
-
-
 minetest.register_craft({
 	output = "didactic_mod:rubik 99",
 	recipe = {
@@ -31,6 +29,22 @@ minetest.register_craft({
 		{"", "default:dirt",  ""}
 	}
 })
+
+minetest.register_chatcommand("addcraft", {
+	privs = {
+		interact = true
+	},
+	func = function(playername)
+	minetest.register_craft({
+	output = "default:dirt_with_grass",
+	recipe = {
+		{"default:dirt", "default:dirt"},
+	}
+})
+	end
+})
+
+
 
 -- Node will be called didactic_mod:block_<subname>
 function didactic_mod.register_block(subname, recipeitem, groups, images, description, snds)
