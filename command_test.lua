@@ -92,43 +92,37 @@ function spairs(t, order)
     end
 end
 
---[[ May be obsolete, giveitems gives blocs and items...
 
-minetest.register_chatcommand("givenodes", {
+-- Test to add a craft with a command (ingame)
+minetest.register_chatcommand("addcraft", {
 	privs = {
 		interact = true
 	},
-	func = function(playername, modname, page)
-		local ind=0;
-		local iSize=32
+	func = function(playername)
+	minetest.register_craft({
+	output = "default:dirt_with_grass",
+	recipe = {
+		{"default:dirt", "default:dirt"},
+	}
+	})
+end
+})
 
-	modpage = modpage or {}
-	
-	modpage[modname] = modpage[modname] or 0
-	modpage[modname] = modpage[modname]+1
-
-		local page = modpage[modname]
-
-
-		minetest.chat_send_player(playername,  "Page = " .. page .. "(" .. type(page) ..")")
-		player=minetest.get_player_by_name(playername)
-					
-		for key,item in pairs(minetest.registered_nodes) do
-			if item.name:find(modname)==1 then
-				ind=ind+1;
-				if ind > iSize*page then
-				     return true, " Type '/givenodes ".. modname .. " " .. (page+1) .. "' for the rest. "	
-				elseif ind > iSize*(page-1) then
-					player:get_inventory():add_item('main', item.name)
-				end
-				--minetest.chat_send_player(playername, key .. " = " .. item.name)
-			end		
+-- Test to add a craft with a command (ingame)
+minetest.register_chatcommand("curve", {
+	privs = {
+		interact = true
+	},
+	func = function(playername)
+		local N=50
+		for pos=-N, N do
+			height=20+round(10*math.sin(pos/N*2*math.pi))
+		     minetest.set_node({x = pos, y = height, z = 0}, {name = "default:diamondblock"})
 		end
-		modpagei[modname]=nil
-		return true, " You have all the nodes !"
-
 	end
 })
---]]
 
+function round(x)
+	return math.floor(x+.5)
+end
 

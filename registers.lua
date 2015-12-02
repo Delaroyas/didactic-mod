@@ -30,19 +30,7 @@ minetest.register_craft({
 	}
 })
 
-minetest.register_chatcommand("addcraft", {
-	privs = {
-		interact = true
-	},
-	func = function(playername)
-	minetest.register_craft({
-	output = "default:dirt_with_grass",
-	recipe = {
-		{"default:dirt", "default:dirt"},
-	}
-})
-	end
-})
+
 
 
 
