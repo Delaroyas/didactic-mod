@@ -122,6 +122,33 @@ minetest.register_chatcommand("curve", {
 	end
 })
 
+-- Test to add a craft with a command (ingame)
+minetest.register_chatcommand("gauss2", {
+	privs = {
+		interact = true
+	},
+	func = function(playername)
+		player=minetest.get_player_by_name(playername)
+		local curpos = player:getpos()
+		local curblock =  player:get_wielded_item()
+		curblock = curblock:get_name()
+
+		local N=50
+		for posx=-N, N do
+			for posz=-N, N do
+				height=round(curpos.y*math.exp(-(posx^2+posz^2)/200))
+				if height>0 then
+		     		minetest.set_node({x = posx+curpos.x, y = height, z = posz+curpos.z}, 
+						  {name = curblock})
+				minetest.set_node({x = posx+curpos.x, y = height-1, z = posz+curpos.z}, 
+						  {name = curblock})
+				end
+			end
+		end
+	end
+})
+
+
 function round(x)
 	return math.floor(x+.5)
 end
