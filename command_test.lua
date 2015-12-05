@@ -69,29 +69,6 @@ minetest.register_chatcommand("dumpdesc", {
 
 
 
-function spairs(t, order)
-    -- collect the keys
-    local keys = {}
-    for k in pairs(t) do keys[#keys+1] = k end
-
-    -- if order function given, sort by it by passing the table and keys a, b,
-    -- otherwise just sort the keys 
-    if order then
-        table.sort(keys, function(a,b) return order(t, a, b) end)
-    else
-        table.sort(keys)
-    end
-
-    -- return the iterator function
-    local i = 0
-    return function()
-        i = i + 1
-        if keys[i] then
-            return keys[i], t[keys[i]]
-        end
-    end
-end
-
 
 -- Test to add a craft with a command (ingame)
 minetest.register_chatcommand("addcraft", {
@@ -132,24 +109,118 @@ minetest.register_chatcommand("gauss2", {
 		local curpos = player:getpos()
 		local curblock =  player:get_wielded_item()
 		curblock = curblock:get_name()
+		gaussian(curpos,curblock)
+		
+	end
+})
 
-		local N=50
+function gaussian(curpos,curblock)
+local N=50
 		for posx=-N, N do
 			for posz=-N, N do
-				height=round(curpos.y*math.exp(-(posx^2+posz^2)/200))
-				if height>0 then
-		     		minetest.set_node({x = posx+curpos.x, y = height, z = posz+curpos.z}, 
-						  {name = curblock})
-				minetest.set_node({x = posx+curpos.x, y = height-1, z = posz+curpos.z}, 
-						  {name = curblock})
+				local height=round(curpos.y*math.exp(-(posx^2+posz^2)/200))
+				while height>0 do
+					local p={x = posx+curpos.x, y = height, z = posz+curpos.z}
+					local block=minetest.get_node(p)
+					if ( block.name=='air' or block.name=='ignore') then
+		     			minetest.set_node(p,  {name = curblock})
+						height=height-1
+					else
+						height=0
+					end
 				end
 			end
+		end
+
+end
+
+
+-- Test to add a craft with a command (ingame)
+minetest.register_chatcommand("chain", {
+	privs = {
+		interact = true
+	},
+	func = function(playername)
+		player=minetest.get_player_by_name(playername)
+		local curpos = findClosestBlock(player)
+		
+		if curpos==nil then
+			return false, "Found notting but air"
+		else
+			local thisnode = minetest.get_node(curpos)
+			minetest.chat_send_player(playername,  "Found : " .. thisnode.name )
+		end
+
+		blocklist=getNeighbors(curpos)
+		for ind,thispos in pairs(blocklist) do
+			local thisnode = minetest.get_node(thispos)
+			minetest.chat_send_player(playername,  ind .." Found : " .. thisnode.name )
+			gaussian(thispos,thisnode.name)
 		end
 	end
 })
 
 
-function round(x)
-	return math.floor(x+.5)
+function getNeighbors(curpos)
+blocklist={curpos}
+newblocks={curpos}
+found={}
+
+ind=1
+counter=0
+delta=closeBlocks(1)
+-- While new blocks are found
+while not(next(newblocks) == nil) do
+	indFound=0;
+	-- Cheack all neibours of each new blocks
+	for _,thisblock in pairs(newblocks) do 
+		for _,thisoffset in pairs(delta) do 
+			-- test for this neibour			
+			test=addPosition(thisblock,thisoffset);
+			block=minetest.get_node(test)
+			-- if not air and not in blocklist			
+			if not ( block.name=='air' or block.name=='ignore')then
+				if not isItemInList(blocklist,test)   then
+					--minetest.chat_send_all("Found " ..block.name)
+					-- count it as a new block and put it in the list
+					indFound=indFound+1
+					found[indFound]=test
+					ind=ind+1
+					blocklist[ind]=test
+				end
+			end
+
+			--failsafe... Dont go forever please...
+			counter=counter+1
+			if counter>100000 then
+				minetest.chat_send_all(ind.." failsafe... Too many blocks, Dont go forever please...")
+				return blocklist
+			end
+		end --for
+	end-- for
+	newblocks=found
+	found={}
+end-- while
+minetest.chat_send_all(ind.." failsafe... Too many blocks Dont go forever please...")
+return blocklist
+end--function
+
+
+
+function findClosestBlock(player)
+	local curpos = player:getpos()
+	local disp ={};
+	for d=1,26 do
+		disp = closeBlocks(d)
+		for _,delta in pairs(disp) do 
+				block=minetest.get_node(addPosition(curpos,delta))
+				if not ( block.name=='air' ) then
+					return addPosition(curpos,delta)
+				end
+		end
+	end
+	return nil
 end
+
+
 
