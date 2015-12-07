@@ -1,3 +1,13 @@
+-- Test to relaod this file ingame
+minetest.register_chatcommand("reload", {
+	privs = {
+		interact = true
+	},
+	func = function(playername)
+	 dofile(minetest.get_modpath("didactic_mod").."/command_test.lua")
+	end
+})
+
 minetest.register_chatcommand("giveitems", {
 	privs = {
 		interact = true
@@ -32,6 +42,8 @@ minetest.register_chatcommand("giveitems", {
 		
 	end
 })
+
+
 
 
 minetest.register_chatcommand("dumpdesc", {
@@ -114,7 +126,34 @@ minetest.register_chatcommand("gauss2", {
 	end
 })
 
-function gaussian(curpos,curblock)
+-- Test to add a craft with a command (ingame)
+minetest.register_chatcommand("circle", {
+	privs = {
+		interact = true
+	},
+	func = function(playername,radius)
+		local radius=tonumber(radius)
+		player=minetest.get_player_by_name(playername)
+		local curpos = player:getpos()
+		local curblock =  player:get_wielded_item()
+		curblock = curblock:get_name()
+
+		blocklist=traceCircle(radius)
+		for ind,thispos in pairs(blocklist) do
+			--local thisnode = minetest.get_node(thispos)
+			minetest.set_node(addPosition(curpos,thispos) ,  {name = curblock})
+			--buildGaussian(thispos,thisnode.name)
+			N=ind
+		end
+		minetest.chat_send_player(playername,  " Found " .. N .. " nodes")
+	end
+})
+
+
+
+
+
+function buildGaussian(curpos,curblock)
 local N=50
 		for posx=-N, N do
 			for posz=-N, N do
@@ -154,9 +193,10 @@ minetest.register_chatcommand("chain", {
 		blocklist=getNeighbors(curpos)
 		for ind,thispos in pairs(blocklist) do
 			local thisnode = minetest.get_node(thispos)
-			minetest.chat_send_player(playername,  ind .." Found : " .. thisnode.name )
-			gaussian(thispos,thisnode.name)
+			
+			buildGaussian(thispos,thisnode.name)
 		end
+		minetest.chat_send_player(playername,  " Found " .. ind .. " nodes")
 	end
 })
 
