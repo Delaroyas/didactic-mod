@@ -121,7 +121,7 @@ minetest.register_chatcommand("gauss2", {
 		local curpos = player:getpos()
 		local curblock =  player:get_wielded_item()
 		curblock = curblock:get_name()
-		gaussian(curpos,curblock)
+		buildGaussian(curpos,curblock)
 		
 	end
 })
@@ -261,6 +261,62 @@ function findClosestBlock(player)
 	end
 	return nil
 end
+
+-- Test to add a craft with a command (ingame)
+minetest.register_chatcommand("revolution", {
+	privs = {
+		interact = true
+	},
+	func = function(playername)
+		local pos1 = worldedit.pos1[playername]
+		local pos2 = worldedit.pos2[playername]
+		local dir
+		if pos1.x==pos2.x then
+			dir ='z'
+		else 
+			dir ='x'
+		end
+		local stepr =1
+		local limr =  pos2[dir]-pos1[dir]
+		if limr<0 then
+			stepr=-1
+		end
+		minetest.chat_send_all(limr)
+
+		--local radius=math.sqrt((pos1.x-pos2.x)^2+(pos1.z-pos2.z)^2)
+		player=minetest.get_player_by_name(playername)
+		
+		local floor=math.min(pos1.y,pos2.y)
+		local limh2=math.abs(pos1.y-pos2.y)
+		pos1.y=floor
+		
+		--local curpos = player:getpos()
+		--local curblock =  player:get_wielded_item()
+		--curblock = curblock:get_name()
+		local offset= {x=0, y=0, z=0}
+		local height= {x=0, y=0, z=0}
+		for radius = limr,stepr,-stepr do
+			
+			blocklist=traceCircle(math.abs(radius))
+			for h = 0,limh2 do
+				offset.y=h 
+				offset[dir]=radius
+				height.y=h
+
+				curblock = minetest.get_node(addPosition(pos1,offset))
+				
+				curpos=addPosition(pos1,height)
+
+				--minetest.chat_send_all( curblock.name)
+
+				for ind,thispos in pairs(blocklist) do
+					minetest.set_node(addPosition(curpos,thispos) ,  curblock)
+				end
+			end
+		end
+
+	end
+})
 
 
 
