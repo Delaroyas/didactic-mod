@@ -200,6 +200,45 @@ minetest.register_chatcommand("chain", {
 	end
 })
 
+-- Test to add a craft with a command (ingame)
+minetest.register_chatcommand("carpet", {
+	privs = {
+		interact = true
+	},
+	func = function(playername,dim)
+		local dim=tonumber(dim) or 2
+		player=minetest.get_player_by_name(playername)
+		local curpos = player:getpos()
+		local N=3^dim
+		--local H=0;
+		local thispos={}
+		material ={'default:stone','default:stonebrick','default:sandstone','default:stonebrick','default:desert_stonebrick'}
+		material[0]='default:dirt_with_grass'
+		for posx=1, N do
+			thispos.x=curpos.x+posx
+			for posz=1, N do
+				thispos.z=curpos.z+posz
+				local h=0				
+				for s=1, N do
+					scale=3^(s-1)
+					if ( (math.ceil( posx/scale )%3)==2 and (math.ceil( posz/scale )%3)==2  ) then
+						h=s
+						
+					end
+				end
+				for ypos=0,h do
+					thispos.y=curpos.y+ypos
+					minetest.set_node(thispos ,  {name =material[h]})
+				end
+				
+			end
+		end
+		
+
+	end
+})
+
+
 
 function getNeighbors(curpos)
 blocklist={curpos}
